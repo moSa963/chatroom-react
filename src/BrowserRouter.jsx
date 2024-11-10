@@ -1,88 +1,68 @@
 import { createBrowserRouter } from "react-router-dom";
-import DashboardScreen from "./screens/DashboardScreen";
 import ErrorScreen from "./screens/ErrorScreen";
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreenNav from "./screens/SettingsScreen/SettingsScreenNav";
-import RoomsScreen from "./screens/RoomScreens/RoomsScreen";
-import CreateRoomScreen from "./screens/RoomScreens/CreateRoomScreen";
-import RoomBaseScreen from "./screens/RoomScreens/RoomBaseScreen";
-import ShowRoomScreen from "./screens/RoomScreens/ShowRoomScreen";
-import RoomSettingsNav from "./screens/RoomSettingsScreens/RoomSettingsNav";
-import ConversationScreen from "./screens/RoomScreens/ConversationScreen";
-import ShowRoomsUserScreen from "./screens/RoomScreens/ShowRoomsUserScreen";
-import RoomSettingsScreen from "./screens/RoomSettingsScreens/RoomSettingsScreen";
-import RoomRequestsSreen from "./screens/RoomSettingsScreens/RoomRequestsSreen";
-import RoomUsersScreen from "./screens/RoomSettingsScreens/RoomUsersScreen";
-import RoomBansScreen from "./screens/RoomSettingsScreens/RoomBansScreen";
-import RoomThemeScreen from "./screens/RoomSettingsScreens/RoomThemeScreen";
-import ProfileScreen from "./screens/SettingsScreen/ProfileScreen";
-import ThemeScreen from "./screens/SettingsScreen/ThemeScreen";
-import UserInvitationsScreen from "./screens/SettingsScreen/UserInvitationsScreen";
-import UserBaseScreen from "./screens/UsersScreens/UserBaseScreen";
-import UserScreen from "./screens/UsersScreens/UserScreen";
 
 
 export const createRoutes = () => createBrowserRouter([
     {
         path: "dashboard",
-        element: <DashboardScreen />,
+        lazy: () => getLazyComponent(import("./screens/DashboardScreen")),
         children: [
             {
                 index: true,
-                element: <HomeScreen />
+                lazy: () => getLazyComponent(import("./screens/HomeScreen"))
             },
             {
                 path: "rooms",
                 children: [
                     {
                         index: true,
-                        element: <RoomsScreen />
+                        lazy: () => getLazyComponent(import("./screens/RoomScreens/RoomsScreen"))
                     },
                     {
                         path: "new",
-                        element: <CreateRoomScreen />
+                        lazy: () => getLazyComponent(import("./screens/RoomScreens/CreateRoomScreen"))
                     },
                     {
                         path: ":id",
-                        element: <RoomBaseScreen />,
+                        lazy: () => getLazyComponent(import("./screens/RoomScreens/RoomBaseScreen")),
                         children: [
                             {
                                 index: true,
-                                element: <ShowRoomScreen />
+                                lazy: () => getLazyComponent(import("./screens/RoomScreens/ShowRoomScreen"))
                             },
                             {
                                 path: "settings",
-                                element: <RoomSettingsNav />,
+                                lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomSettingsNav")),
                                 children: [
                                     {
                                         index: true,
-                                        element: <RoomSettingsScreen />
+                                        lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomSettingsScreen"))
                                     },
                                     {
                                         path: "requests",
-                                        element: <RoomRequestsSreen />
+                                        lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomRequestsScreen"))
                                     },
                                     {
                                         path: "users",
-                                        element: <RoomUsersScreen />
+                                        lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomUsersScreen"))
                                     },
                                     {
                                         path: "bans",
-                                        element: <RoomBansScreen />
+                                        lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomBansScreen"))
                                     },
                                     {
                                         path: "theme",
-                                        element: <RoomThemeScreen />
+                                        lazy: () => getLazyComponent(import("./screens/RoomSettingsScreens/RoomThemeScreen"))
                                     },
                                 ],
                             },
                             {
                                 path: "users/:username",
-                                element: <ShowRoomsUserScreen />
+                                lazy: () => getLazyComponent(import("./screens/RoomScreens/ShowRoomsUserScreen"))
                             },
                             {
                                 path: "chat",
-                                element: <ConversationScreen />
+                                lazy: () => getLazyComponent(import("./screens/RoomScreens/ConversationScreen"))
                             },
                         ],
                     },
@@ -90,19 +70,19 @@ export const createRoutes = () => createBrowserRouter([
             },
             {
                 path: "settings",
-                element: <SettingsScreenNav />,
+                lazy: () => getLazyComponent(import("./screens/SettingsScreen/SettingsScreenNav")),
                 children: [
                     {
                         index: true,
-                        element: <ProfileScreen />,
+                        lazy: () => getLazyComponent(import("./screens/SettingsScreen/ProfileScreen")),
                     },
                     {
                         path: "theme",
-                        element: <ThemeScreen />,
+                        lazy: () => getLazyComponent(import("./screens/SettingsScreen/ThemeScreen")),
                     },
                     {
                         path: "invitations",
-                        element: <UserInvitationsScreen />,
+                        lazy: () => getLazyComponent(import("./screens/SettingsScreen/UserInvitationsScreen")),
                     },
                 ],
             },
@@ -111,11 +91,11 @@ export const createRoutes = () => createBrowserRouter([
                 children: [
                     {
                         path: ":username",
-                        element: <UserBaseScreen />,
+                        lazy: () => getLazyComponent(import("./screens/UsersScreens/UserBaseScreen")),
                         children: [
                             {
                                 index: true,
-                                element: <UserScreen />
+                                lazy: () => getLazyComponent(import("./screens/RoomScreens/ShowRoomsUserScreen"))
                             },
                         ]
                     },
@@ -125,6 +105,13 @@ export const createRoutes = () => createBrowserRouter([
     },
     {
         path: "*",
-        element: <ErrorScreen status={404} errorText="Sorry. this page does not exist" to={"/dashboard"} toText="HOMR PAGE" />,
+        element: <ErrorScreen status={404} errorText="Sorry. this page does not exist" to={"/dashboard"} toText="HOME PAGE" />,
     }
 ]);
+
+
+const getLazyComponent = async (op) => {
+    return {
+        Component: (await op).default
+    };
+}
