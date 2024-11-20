@@ -12,8 +12,6 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with:
-          cache: "npm"
 
       - name: Install, build, and test
         run: |
@@ -23,28 +21,25 @@ jobs:
 
       - name: Clone Laravel repo
         run: |
-          git clone https://github.com/moSa963/chatroom chatroom
-          git config user.name "Github action"
-          git config user.email "actions@github.com"
-        env:
-          token: ${{ secrets.CHATROOM_TOKEN }}
+          git clone https://x-access-token:${{secrets.CHATROOM_TOKEN}}@github.com/moSa963/chatroom
+          git config --global user.name "Github action"
+          git config --global user.email "actions@github.com"
 
       - name: Copy build files into Laravel
         run: |
-          rm -rf chatroom/public/assets/*
-          cp -r dist/assets/* chatroom/public/assets/
+          rm -r chatroom/public/assets
+          cp -r dist/assets chatroom/public/
 
       - name: Rename links in the main html
         run: |
-          JS_FILE=$(find dist/assets -name "index-.*.js" -print | xargs -n 1 basename)
-          CSS_FILE=$(find dist/assets -name "index-.*.css" -print | xargs -n 1 basename)
+          JS_FILE=$(find dist/assets -name "index-*.js" -print | xargs -n 1 basename)
+          CSS_FILE=$(find dist/assets -name "index-*.css" -print | xargs -n 1 basename)
           sed -i "s|src=\"/assets/index-.*.js\"|src=\"/assets/${JS_FILE}\"|" chatroom/resources/views/index.blade.php
           sed -i "s|href=\"/assets/index-.*.css\"|href=\"/assets/${CSS_FILE}\"|" chatroom/resources/views/index.blade.php
 
       - name: Commit and push changes
         run: |
           cd chatroom
-          git checkout -B test
+          git checkout master
           git add .
-          git commit -m "Updating react build"
-          git push origin test
+          git diff --cached --quiet || (git commit -m "Updating react build" && git push origin master)
