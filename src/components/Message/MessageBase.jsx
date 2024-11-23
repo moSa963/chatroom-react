@@ -67,6 +67,7 @@ const MessageBase = ({ message, right, children, manageMessage }) => {
                         sx={{
                             display: "flex",
                             flexDirection: "column",
+                            gap: 1,
                             p: 0.5,
                         }}
                     >

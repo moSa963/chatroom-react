@@ -10,12 +10,14 @@ const MessageTitle = ({ title, right }) => {
             sx={{
                 position: "relative",
                 border: "1px solid",
+                width: "fit-content",
+                borderRadius: 2,
+                alignSelf: right ? "end" : "start",
                 bgcolor: (theme) =>
-                    alpha(theme.palette.background.default, 0.8),
-                borderColor: (theme) =>
                     right
-                        ? alpha(theme.palette.primary.dark, 0.3)
-                        : alpha(theme.palette.divider, 0.3),
+                        ? alpha(theme.palette.primary.dark, 0.5)
+                        : alpha(theme.palette.background.paper, 0.8),
+                borderColor: (theme) => alpha(theme.palette.divider, 0.2),
                 p: 0.5,
             }}
         >
